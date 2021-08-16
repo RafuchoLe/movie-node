@@ -13,17 +13,16 @@ class controller {
         function findMovie(filter, update) {
             return new Promise((resolve, reject) => {
                 console.log(filter);
-
                 const query = { 
                     title: filter
                 };
-
                 var movieToUpdate = {};
                 movieToUpdate = Object.assign(movieToUpdate, update._doc);
                 delete movieToUpdate._id;
 
 
                 return Movie.findOneAndUpdate({title: filter}, movieToUpdate, {
+                    useFindAndModify: true,
                     new: true,
                     upsert: true 
                   }).exec().then(resolve, reject);
@@ -33,20 +32,16 @@ class controller {
         function findOmdb(movieName, year = null) {
             return new Promise((resolve, reject) =>{
                 return omdb.get({
-                    title: movieName,   // optionnal (requires imdbid or title)
-                    plot: 'full',               // optionnal (defaults to 'short')
-                    year: year                // optionnal
+                    title: movieName,   
+                    plot: 'full',               
+                    year: year                
                 }).then(resolve, reject);
             })
         }
         
 
-        const searchString = ctx.request.params.busqueda;
+        const searchString = ctx.request.params.title;
         const searchYear = ctx.request.header.year;
-        const query = { title: {
-            "$regex" : searchString,
-            "$options": "i"
-        }};
 
         return await findOmdb(searchString, searchYear).then(omdb => {
             console.log(searchYear)

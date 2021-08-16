@@ -9,5 +9,5 @@ mongoose.connect('mongodb://localhost:27017/movie_node', {useNewUrlParser: true,
         .catch(error => console.log(error));
 
 app.listen(port, () => {
-    console.log('KOA esta funcionando');
+    console.log('App funcionando');
 });
